@@ -1,1 +1,306 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magyar Kvíz Verseny</title>
 
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #b71c1c, #ffffff, #16803c);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 650px;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #222;
+            font-size: 36px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #16803c;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #16803c;
+            color: white;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.02);
+            background: #10652f;
+        }
+
+        #quiz,
+        #result {
+            display: none;
+        }
+
+        .question {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+
+        .answer {
+            background: #f1f1f1;
+            color: #222;
+            margin-bottom: 12px;
+        }
+
+        .answer:hover {
+            background: #ddd;
+        }
+
+        .score {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 25px 0;
+            color: #16803c;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- KEZDŐOLDAL -->
+    <div id="start">
+        <h1>🇭🇺 Magyar Kvíz Verseny</h1>
+
+        <p class="subtitle">
+            Teszteld a tudásod és kerülj fel az országos ranglistára!
+        </p>
+
+        <input
+            type="text"
+            id="playerName"
+            placeholder="Írd be a neved"
+            maxlength="30"
+        >
+
+        <button onclick="startGame()">
+            Játék indítása
+        </button>
+    </div>
+
+
+    <!-- KVÍZ -->
+    <div id="quiz">
+
+        <h2 id="questionNumber"></h2>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+    </div>
+
+
+    <!-- EREDMÉNY -->
+    <div id="result">
+
+        <h1>🎉 Gratulálunk!</h1>
+
+        <p id="resultText"></p>
+
+        <div class="score" id="score"></div>
+
+        <button onclick="location.reload()">
+            Új játék
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const questions = [
+        {
+            question: "Mi Magyarország fővárosa?",
+            answers: [
+                "Budapest",
+                "Debrecen",
+                "Szeged",
+                "Pécs"
+            ],
+            correct: 0
+        },
+        {
+            question: "Melyik évben volt a magyar honfoglalás?",
+            answers: [
+                "476",
+                "896",
+                "1000",
+                "1241"
+            ],
+            correct: 1
+        },
+        {
+            question: "Ki írta a Himnuszt?",
+            answers: [
+                "Petőfi Sándor",
+                "Arany János",
+                "Kölcsey Ferenc",
+                "Ady Endre"
+            ],
+            correct: 2
+        },
+        {
+            question: "Melyik Magyarország legnagyobb tava?",
+            answers: [
+                "Tisza-tó",
+                "Balaton",
+                "Fertő-tó",
+                "Velencei-tó"
+            ],
+            correct: 1
+        },
+        {
+            question: "Melyik a magyar fizetőeszköz?",
+            answers: [
+                "Euro",
+                "Korona",
+                "Forint",
+                "Pengő"
+            ],
+            correct: 2
+        }
+    ];
+
+
+    let currentQuestion = 0;
+    let score = 0;
+    let playerName = "";
+
+
+    function startGame() {
+
+        const nameInput = document.getElementById("playerName");
+
+        playerName = nameInput.value.trim();
+
+        if (playerName === "") {
+            alert("Kérlek, írd be a neved!");
+            return;
+        }
+
+        document.getElementById("start").style.display = "none";
+        document.getElementById("quiz").style.display = "block";
+
+        showQuestion();
+    }
+
+
+    function showQuestion() {
+
+        const question = questions[currentQuestion];
+
+        document.getElementById("questionNumber").textContent =
+            `Kérdés ${currentQuestion + 1} / ${questions.length}`;
+
+        document.getElementById("question").textContent =
+            question.question;
+
+        const answersContainer =
+            document.getElementById("answers");
+
+        answersContainer.innerHTML = "";
+
+
+        question.answers.forEach((answer, index) => {
+
+            const button = document.createElement("button");
+
+            button.textContent = answer;
+            button.className = "answer";
+
+            button.onclick = function () {
+                checkAnswer(index);
+            };
+
+            answersContainer.appendChild(button);
+        });
+    }
+
+
+    function checkAnswer(selectedAnswer) {
+
+        const question = questions[currentQuestion];
+
+        if (selectedAnswer === question.correct) {
+            score += 100;
+        }
+
+        currentQuestion++;
+
+        if (currentQuestion < questions.length) {
+            showQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+
+    function showResult() {
+
+        document.getElementById("quiz").style.display = "none";
+        document.getElementById("result").style.display = "block";
+
+        document.getElementById("resultText").textContent =
+            `${playerName}, a játékod véget ért!`;
+
+        document.getElementById("score").textContent =
+            `${score} pont`;
+    }
+
+</script>
+
+</body>
+</html>
