@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="hu">
 <head>
@@ -22,18 +23,17 @@
 
         .container {
             width: 90%;
-            max-width: 650px;
+            max-width: 700px;
             background: white;
             padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.25);
             text-align: center;
         }
 
         h1 {
             margin-top: 0;
             color: #222;
-            font-size: 36px;
         }
 
         .subtitle {
@@ -67,6 +67,7 @@
             background: #16803c;
             color: white;
             transition: 0.2s;
+            margin-bottom: 10px;
         }
 
         button:hover {
@@ -74,21 +75,29 @@
             background: #10652f;
         }
 
+        .secondary {
+            background: #333;
+        }
+
+        .secondary:hover {
+            background: #222;
+        }
+
         #quiz,
-        #result {
+        #result,
+        #leaderboard {
             display: none;
         }
 
         .question {
             font-size: 24px;
             font-weight: bold;
-            margin-bottom: 25px;
+            margin: 25px 0;
         }
 
         .answer {
             background: #f1f1f1;
             color: #222;
-            margin-bottom: 12px;
         }
 
         .answer:hover {
@@ -96,9 +105,36 @@
         }
 
         .score {
-            font-size: 32px;
+            font-size: 36px;
             font-weight: bold;
             margin: 25px 0;
+            color: #16803c;
+        }
+
+        .leaderboard-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px;
+            margin: 8px 0;
+            background: #f5f5f5;
+            border-radius: 10px;
+            font-size: 18px;
+        }
+
+        .rank {
+            font-weight: bold;
+            min-width: 50px;
+        }
+
+        .player {
+            flex: 1;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .points {
+            font-weight: bold;
             color: #16803c;
         }
     </style>
@@ -110,10 +146,11 @@
 
     <!-- KEZDŐOLDAL -->
     <div id="start">
+
         <h1>🇭🇺 Magyar Kvíz Verseny</h1>
 
         <p class="subtitle">
-            Teszteld a tudásod és kerülj fel az országos ranglistára!
+            Teszteld a tudásod és kerülj fel a ranglistára!
         </p>
 
         <input
@@ -126,6 +163,11 @@
         <button onclick="startGame()">
             Játék indítása
         </button>
+
+        <button class="secondary" onclick="showLeaderboard()">
+            🏆 Ranglista
+        </button>
+
     </div>
 
 
@@ -150,8 +192,30 @@
 
         <div class="score" id="score"></div>
 
-        <button onclick="location.reload()">
+        <button onclick="showLeaderboard()">
+            🏆 Ranglista megtekintése
+        </button>
+
+        <button class="secondary" onclick="location.reload()">
             Új játék
+        </button>
+
+    </div>
+
+
+    <!-- LEADERBOARD -->
+    <div id="leaderboard">
+
+        <h1>🏆 Ranglista</h1>
+
+        <p class="subtitle">
+            A legjobb eredmények
+        </p>
+
+        <div id="leaderboardList"></div>
+
+        <button onclick="location.reload()">
+            Vissza
         </button>
 
     </div>
@@ -161,146 +225,245 @@
 
 <script>
 
-    const questions = [
-        {
-            question: "Mi Magyarország fővárosa?",
-            answers: [
-                "Budapest",
-                "Debrecen",
-                "Szeged",
-                "Pécs"
-            ],
-            correct: 0
-        },
-        {
-            question: "Melyik évben volt a magyar honfoglalás?",
-            answers: [
-                "476",
-                "896",
-                "1000",
-                "1241"
-            ],
-            correct: 1
-        },
-        {
-            question: "Ki írta a Himnuszt?",
-            answers: [
-                "Petőfi Sándor",
-                "Arany János",
-                "Kölcsey Ferenc",
-                "Ady Endre"
-            ],
-            correct: 2
-        },
-        {
-            question: "Melyik Magyarország legnagyobb tava?",
-            answers: [
-                "Tisza-tó",
-                "Balaton",
-                "Fertő-tó",
-                "Velencei-tó"
-            ],
-            correct: 1
-        },
-        {
-            question: "Melyik a magyar fizetőeszköz?",
-            answers: [
-                "Euro",
-                "Korona",
-                "Forint",
-                "Pengő"
-            ],
-            correct: 2
-        }
-    ];
+const questions = [
+
+    {
+        question: "Mi Magyarország fővárosa?",
+        answers: [
+            "Budapest",
+            "Debrecen",
+            "Szeged",
+            "Pécs"
+        ],
+        correct: 0
+    },
+
+    {
+        question: "Melyik évben volt a magyar honfoglalás?",
+        answers: [
+            "476",
+            "896",
+            "1000",
+            "1241"
+        ],
+        correct: 1
+    },
+
+    {
+        question: "Ki írta a Himnuszt?",
+        answers: [
+            "Petőfi Sándor",
+            "Arany János",
+            "Kölcsey Ferenc",
+            "Ady Endre"
+        ],
+        correct: 2
+    },
+
+    {
+        question: "Melyik Magyarország legnagyobb tava?",
+        answers: [
+            "Tisza-tó",
+            "Balaton",
+            "Fertő-tó",
+            "Velencei-tó"
+        ],
+        correct: 1
+    },
+
+    {
+        question: "Melyik a magyar fizetőeszköz?",
+        answers: [
+            "Euro",
+            "Korona",
+            "Forint",
+            "Pengő"
+        ],
+        correct: 2
+    }
+
+];
 
 
-    let currentQuestion = 0;
-    let score = 0;
-    let playerName = "";
+let currentQuestion = 0;
+let score = 0;
+let playerName = "";
 
 
-    function startGame() {
+function startGame() {
 
-        const nameInput = document.getElementById("playerName");
+    const input = document.getElementById("playerName");
 
-        playerName = nameInput.value.trim();
+    playerName = input.value.trim();
 
-        if (playerName === "") {
-            alert("Kérlek, írd be a neved!");
-            return;
-        }
+    if (playerName === "") {
+        alert("Kérlek, írd be a neved!");
+        return;
+    }
 
-        document.getElementById("start").style.display = "none";
-        document.getElementById("quiz").style.display = "block";
+    document.getElementById("start").style.display = "none";
+    document.getElementById("quiz").style.display = "block";
+
+    showQuestion();
+}
+
+
+function showQuestion() {
+
+    const question = questions[currentQuestion];
+
+    document.getElementById("questionNumber").textContent =
+        `Kérdés ${currentQuestion + 1} / ${questions.length}`;
+
+    document.getElementById("question").textContent =
+        question.question;
+
+    const answersContainer =
+        document.getElementById("answers");
+
+    answersContainer.innerHTML = "";
+
+    question.answers.forEach((answer, index) => {
+
+        const button = document.createElement("button");
+
+        button.textContent = answer;
+        button.className = "answer";
+
+        button.onclick = function() {
+            checkAnswer(index);
+        };
+
+        answersContainer.appendChild(button);
+
+    });
+}
+
+
+function checkAnswer(selectedAnswer) {
+
+    const question = questions[currentQuestion];
+
+    if (selectedAnswer === question.correct) {
+        score += 100;
+    }
+
+    currentQuestion++;
+
+    if (currentQuestion < questions.length) {
 
         showQuestion();
+
+    } else {
+
+        saveScore();
+        showResult();
+
+    }
+}
+
+
+function saveScore() {
+
+    let leaderboard =
+        JSON.parse(localStorage.getItem("leaderboard")) || [];
+
+    leaderboard.push({
+        name: playerName,
+        score: score
+    });
+
+    leaderboard.sort((a, b) => b.score - a.score);
+
+    leaderboard = leaderboard.slice(0, 100);
+
+    localStorage.setItem(
+        "leaderboard",
+        JSON.stringify(leaderboard)
+    );
+}
+
+
+function showResult() {
+
+    document.getElementById("quiz").style.display = "none";
+    document.getElementById("result").style.display = "block";
+
+    document.getElementById("resultText").textContent =
+        `${playerName}, a játékod véget ért!`;
+
+    document.getElementById("score").textContent =
+        `${score} pont`;
+}
+
+
+function showLeaderboard() {
+
+    document.getElementById("start").style.display = "none";
+    document.getElementById("result").style.display = "none";
+    document.getElementById("leaderboard").style.display = "block";
+
+    const list =
+        document.getElementById("leaderboardList");
+
+    list.innerHTML = "";
+
+    let leaderboard =
+        JSON.parse(localStorage.getItem("leaderboard")) || [];
+
+    if (leaderboard.length === 0) {
+
+        list.innerHTML =
+            "<p>Még nincs eredmény.</p>";
+
+        return;
     }
 
 
-    function showQuestion() {
+    leaderboard.forEach((player, index) => {
 
-        const question = questions[currentQuestion];
+        const row = document.createElement("div");
 
-        document.getElementById("questionNumber").textContent =
-            `Kérdés ${currentQuestion + 1} / ${questions.length}`;
+        row.className = "leaderboard-row";
 
-        document.getElementById("question").textContent =
-            question.question;
+        let medal = "";
 
-        const answersContainer =
-            document.getElementById("answers");
+        if (index === 0) medal = "🥇";
+        if (index === 1) medal = "🥈";
+        if (index === 2) medal = "🥉";
 
-        answersContainer.innerHTML = "";
+        row.innerHTML = `
+            <span class="rank">
+                ${medal || (index + 1) + "."}
+            </span>
 
+            <span class="player">
+                ${escapeHtml(player.name)}
+            </span>
 
-        question.answers.forEach((answer, index) => {
+            <span class="points">
+                ${player.score} pont
+            </span>
+        `;
 
-            const button = document.createElement("button");
+        list.appendChild(row);
 
-            button.textContent = answer;
-            button.className = "answer";
-
-            button.onclick = function () {
-                checkAnswer(index);
-            };
-
-            answersContainer.appendChild(button);
-        });
-    }
-
-
-    function checkAnswer(selectedAnswer) {
-
-        const question = questions[currentQuestion];
-
-        if (selectedAnswer === question.correct) {
-            score += 100;
-        }
-
-        currentQuestion++;
-
-        if (currentQuestion < questions.length) {
-            showQuestion();
-        } else {
-            showResult();
-        }
-    }
+    });
+}
 
 
-    function showResult() {
+function escapeHtml(text) {
 
-        document.getElementById("quiz").style.display = "none";
-        document.getElementById("result").style.display = "block";
+    const div = document.createElement("div");
 
-        document.getElementById("resultText").textContent =
-            `${playerName}, a játékod véget ért!`;
+    div.textContent = text;
 
-        document.getElementById("score").textContent =
-            `${score} pont`;
-    }
+    return div.innerHTML;
+}
 
 </script>
 
 </body>
 </html>
+```
+
