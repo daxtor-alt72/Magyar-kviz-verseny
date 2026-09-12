@@ -2,784 +2,576 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magyar Kvíz Verseny 🇭🇺</title>
 
-    <title>Magyar Kvíz Verseny 🇭🇺</title>
+<style>
+*{box-sizing:border-box}
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+body{
+    margin:0;
+    min-height:100vh;
+    font-family:Arial,sans-serif;
+    background:linear-gradient(135deg,#b71c1c,#fff,#16803c);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
 
-        body {
-            margin: 0;
-            min-height: 100vh;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #b71c1c, #ffffff, #16803c);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+.container{
+    width:100%;
+    max-width:720px;
+    background:white;
+    border-radius:24px;
+    padding:35px;
+    box-shadow:0 15px 50px rgba(0,0,0,.25);
+}
 
-        .container {
-            width: 100%;
-            max-width: 720px;
-            background: white;
-            border-radius: 24px;
-            padding: 35px;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.25);
-        }
+.hidden{display:none!important}
 
-        .hidden {
-            display: none !important;
-        }
+h1{text-align:center;margin-top:0;font-size:36px}
+h2{text-align:center}
 
-        h1 {
-            text-align: center;
-            margin-top: 0;
-            font-size: 36px;
-        }
+.subtitle{
+    text-align:center;
+    color:#666;
+    font-size:18px;
+    line-height:1.5;
+}
 
-        h2 {
-            text-align: center;
-        }
+input{
+    width:100%;
+    padding:16px;
+    border:2px solid #ddd;
+    border-radius:12px;
+    font-size:18px;
+    margin:20px 0 12px;
+    outline:none;
+}
 
-        .subtitle {
-            text-align: center;
-            color: #666;
-            font-size: 18px;
-            line-height: 1.5;
-        }
+input:focus{border-color:#16803c}
 
-        input {
-            width: 100%;
-            padding: 16px;
-            border: 2px solid #ddd;
-            border-radius: 12px;
-            font-size: 18px;
-            margin: 20px 0 12px;
-            outline: none;
-        }
+button{
+    width:100%;
+    border:none;
+    border-radius:12px;
+    padding:16px;
+    margin-top:10px;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+    background:#16803c;
+    color:white;
+    transition:.2s;
+}
 
-        input:focus {
-            border-color: #16803c;
-        }
+button:hover{
+    transform:translateY(-2px);
+    opacity:.9;
+}
 
-        button {
-            width: 100%;
-            border: none;
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 10px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            background: #16803c;
-            color: white;
-            transition: 0.2s;
-        }
+.dark-button{background:#222}
 
-        button:hover {
-            transform: translateY(-2px);
-            opacity: 0.9;
-        }
+.category{
+    color:white;
+    margin-top:15px;
+}
 
-        .dark-button {
-            background: #222;
-        }
+.easy{background:#16803c}
+.hard{background:#ef6c00}
+.impossible{background:#7b1fa2}
 
-        .topbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
+.category:hover{opacity:.9}
 
-        .badge {
-            padding: 10px 15px;
-            background: #f1f1f1;
-            border-radius: 10px;
-            font-weight: bold;
-        }
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-bottom:20px;
+}
 
-        .timer {
-            color: #b71c1c;
-        }
+.badge{
+    padding:10px 13px;
+    background:#f1f1f1;
+    border-radius:10px;
+    font-weight:bold;
+}
 
-        .progress-background {
-            width: 100%;
-            height: 10px;
-            background: #eee;
-            border-radius: 20px;
-            overflow: hidden;
-            margin-bottom: 30px;
-        }
+.timer{color:#b71c1c}
 
-        .progress {
-            height: 100%;
-            width: 0%;
-            background: #16803c;
-            transition: width 0.3s;
-        }
+.progress-background{
+    width:100%;
+    height:10px;
+    background:#eee;
+    border-radius:20px;
+    overflow:hidden;
+    margin-bottom:30px;
+}
 
-        .question {
-            font-size: 27px;
-            font-weight: bold;
-            text-align: center;
-            line-height: 1.4;
-            margin: 30px 0;
-        }
+.progress{
+    height:100%;
+    width:0%;
+    background:#16803c;
+    transition:width .3s;
+}
 
-        .answer {
-            background: #f4f4f4;
-            color: #222;
-            border: 2px solid transparent;
-            text-align: left;
-        }
+.question{
+    font-size:27px;
+    font-weight:bold;
+    text-align:center;
+    line-height:1.4;
+    margin:30px 0;
+}
 
-        .answer:hover {
-            background: #e5e5e5;
-        }
+.answer{
+    background:#f4f4f4;
+    color:#222;
+    border:2px solid transparent;
+    text-align:left;
+}
 
-        .answer.correct {
-            background: #d9f5df;
-            border-color: #16803c;
-        }
+.answer:hover{background:#e5e5e5}
 
-        .answer.wrong {
-            background: #ffe0e0;
-            border-color: #b71c1c;
-        }
+.answer.correct{
+    background:#d9f5df;
+    border-color:#16803c;
+}
 
-        .feedback {
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-            min-height: 30px;
-            margin: 15px 0;
-        }
+.answer.wrong{
+    background:#ffe0e0;
+    border-color:#b71c1c;
+}
 
-        .score-big {
-            text-align: center;
-            font-size: 52px;
-            font-weight: bold;
-            color: #16803c;
-            margin: 20px 0;
-        }
+.feedback{
+    text-align:center;
+    font-size:20px;
+    font-weight:bold;
+    min-height:30px;
+    margin:15px 0;
+}
 
-        .leaderboard-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 14px;
-            margin: 8px 0;
-            background: #f5f5f5;
-            border-radius: 12px;
-        }
+.score-big{
+    text-align:center;
+    font-size:52px;
+    font-weight:bold;
+    color:#16803c;
+    margin:20px 0;
+}
 
-        .rank {
-            width: 45px;
-            font-weight: bold;
-            font-size: 20px;
-        }
+.leaderboard-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:14px;
+    margin:8px 0;
+    background:#f5f5f5;
+    border-radius:12px;
+}
 
-        .player {
-            flex: 1;
-            font-weight: bold;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+.rank{
+    width:45px;
+    font-weight:bold;
+    font-size:20px;
+}
 
-        .points {
-            font-weight: bold;
-            color: #16803c;
-        }
+.player{
+    flex:1;
+    font-weight:bold;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
 
-        .empty {
-            text-align: center;
-            color: #777;
-            padding: 20px;
-        }
+.points{
+    font-weight:bold;
+    color:#16803c;
+}
 
-        @media (max-width: 600px) {
-            .container {
-                padding: 22px;
-            }
+.empty{
+    text-align:center;
+    color:#777;
+    padding:20px;
+}
 
-            h1 {
-                font-size: 29px;
-            }
+.category-info{
+    text-align:center;
+    font-weight:bold;
+    margin-bottom:15px;
+}
 
-            .question {
-                font-size: 22px;
-            }
-
-            .topbar {
-                font-size: 14px;
-            }
-        }
-    </style>
+@media(max-width:600px){
+    .container{padding:22px}
+    h1{font-size:29px}
+    .question{font-size:22px}
+    .topbar{font-size:13px}
+}
+</style>
 </head>
 
 <body>
 
 <div class="container">
 
-    <!-- KEZDŐOLDAL -->
-    <section id="startScreen">
+<!-- KEZDŐOLDAL -->
+<section id="startScreen">
 
-        <h1>🇭🇺 Magyar Kvíz Verseny</h1>
+<h1>🇭🇺 Magyar Kvíz Verseny</h1>
 
-        <p class="subtitle">
-            Teszteld a magyar tudásod!<br>
-            Válaszolj helyesen és kerülj fel a ranglistára. 🏆
-        </p>
+<p class="subtitle">
+Teszteld a magyar tudásod!<br>
+Írd be a neved, majd válassz nehézségi szintet. 🏆
+</p>
 
-        <input
-            id="playerName"
-            type="text"
-            maxlength="30"
-            placeholder="Írd be a neved"
-        >
+<input
+id="playerName"
+type="text"
+maxlength="30"
+placeholder="Írd be a neved">
 
-        <button onclick="startGame()">
-            🚀 Játék indítása
-        </button>
+<button onclick="startGame()">
+🚀 Játék indítása
+</button>
 
-        <button class="dark-button" onclick="showLeaderboard()">
-            🏆 Ranglista
-        </button>
+<button class="dark-button" onclick="showLeaderboard()">
+🏆 Ranglista
+</button>
 
-    </section>
-
-
-    <!-- KVÍZ -->
-    <section id="quizScreen" class="hidden">
-
-        <div class="topbar">
-
-            <div class="badge">
-                📝 <span id="questionNumber">1 / 10</span>
-            </div>
-
-            <div class="badge">
-                ⭐ <span id="scoreDisplay">0</span> pont
-            </div>
-
-            <div class="badge timer">
-                ⏱️ <span id="timer">15</span>s
-            </div>
-
-        </div>
-
-        <div class="progress-background">
-            <div class="progress" id="progress"></div>
-        </div>
-
-        <div class="question" id="question">
-            Kérdés
-        </div>
-
-        <div id="answers"></div>
-
-        <div class="feedback" id="feedback"></div>
-
-    </section>
+</section>
 
 
-    <!-- EREDMÉNY -->
-    <section id="resultScreen" class="hidden">
+<!-- KATEGÓRIA -->
+<section id="categoryScreen" class="hidden">
 
-        <h1>🎉 Játék vége!</h1>
+<h1>🎮 Válassz kategóriát!</h1>
 
-        <p class="subtitle" id="resultText"></p>
+<p class="subtitle">
+Szia <strong id="welcomeName"></strong>!<br>
+Mennyire nehéz kvízt szeretnél?
+</p>
 
-        <div class="score-big">
-            <span id="finalScore">0</span>
-        </div>
+<button class="category easy" onclick="selectCategory('easy')">
+🟢 KÖNNYŰ
+</button>
 
-        <p class="subtitle">
-            pont
-        </p>
+<button class="category hard" onclick="selectCategory('hard')">
+🟠 NEHÉZ
+</button>
 
-        <button onclick="showLeaderboard()">
-            🏆 Ranglista
-        </button>
+<button class="category impossible" onclick="selectCategory('impossible')">
+☠️ LEHETETLEN
+</button>
 
-        <button class="dark-button" onclick="location.reload()">
-            🔄 Új játék
-        </button>
+<button class="dark-button" onclick="location.reload()">
+← Vissza
+</button>
 
-    </section>
+</section>
 
 
-    <!-- RANGLISTA -->
-    <section id="leaderboardScreen" class="hidden">
+<!-- KVÍZ -->
+<section id="quizScreen" class="hidden">
 
-        <h1>🏆 Ranglista</h1>
+<div class="topbar">
 
-        <p class="subtitle">
-            Legjobb eredmények
-        </p>
+<div class="badge">
+📝 <span id="questionNumber">1 / 20</span>
+</div>
 
-        <div id="leaderboardList"></div>
+<div class="badge">
+⭐ <span id="scoreDisplay">0</span> pont
+</div>
 
-        <button onclick="location.reload()">
-            ← Vissza
-        </button>
+<div class="badge timer">
+⏱️ <span id="timer">15</span>s
+</div>
 
-    </section>
+</div>
+
+<div class="category-info" id="categoryDisplay"></div>
+
+<div class="progress-background">
+<div class="progress" id="progress"></div>
+</div>
+
+<div class="question" id="question">
+Kérdés
+</div>
+
+<div id="answers"></div>
+
+<div class="feedback" id="feedback"></div>
+
+</section>
+
+
+<!-- EREDMÉNY -->
+<section id="resultScreen" class="hidden">
+
+<h1>🎉 Játék vége!</h1>
+
+<p class="subtitle" id="resultText"></p>
+
+<div class="score-big">
+<span id="finalScore">0</span>
+</div>
+
+<p class="subtitle">pont</p>
+
+<button onclick="showLeaderboard()">
+🏆 Ranglista
+</button>
+
+<button class="dark-button" onclick="location.reload()">
+🔄 Új játék
+</button>
+
+</section>
+
+
+<!-- RANGLISTA -->
+<section id="leaderboardScreen" class="hidden">
+
+<h1>🏆 Ranglista</h1>
+
+<p class="subtitle">
+Legjobb eredmények
+</p>
+
+<div id="leaderboardList"></div>
+
+<button onclick="location.reload()">
+← Vissza
+</button>
+
+</section>
 
 </div>
 
 
 <script>
 
-const questions = [
+/* =========================
+   KÖNNYŰ - 20 KÉRDÉS
+========================= */
 
-    {
-        question: "Mi Magyarország fővárosa?",
-        answers: [
-            "Budapest",
-            "Debrecen",
-            "Szeged",
-            "Pécs"
-        ],
-        correct: 0
-    },
+const easyQuestions = [
 
-    {
-        question: "Melyik évben volt a magyar honfoglalás?",
-        answers: [
-            "476",
-            "896",
-            "1000",
-            "1241"
-        ],
-        correct: 1
-    },
+{
+question:"Mi Magyarország fővárosa?",
+answers:["Budapest","Debrecen","Szeged","Pécs"],
+correct:0
+},
 
-    {
-        question: "Ki írta a Himnuszt?",
-        answers: [
-            "Petőfi Sándor",
-            "Arany János",
-            "Kölcsey Ferenc",
-            "Ady Endre"
-        ],
-        correct: 2
-    },
+{
+question:"Milyen színű a magyar zászló felső sávja?",
+answers:["Zöld","Fehér","Piros","Kék"],
+correct:2
+},
 
-    {
-        question: "Melyik Magyarország legnagyobb tava?",
-        answers: [
-            "Tisza-tó",
-            "Balaton",
-            "Fertő-tó",
-            "Velencei-tó"
-        ],
-        correct: 1
-    },
+{
+question:"Melyik a magyar fizetőeszköz?",
+answers:["Euro","Forint","Korona","Dollár"],
+correct:1
+},
 
-    {
-        question: "Melyik a magyar fizetőeszköz?",
-        answers: [
-            "Euro",
-            "Korona",
-            "Forint",
-            "Pengő"
-        ],
-        correct: 2
-    },
+{
+question:"Melyik Magyarország legnagyobb tava?",
+answers:["Balaton","Tisza-tó","Velencei-tó","Fertő-tó"],
+correct:0
+},
 
-    {
-        question: "Melyik városban található a Dóm tér?",
-        answers: [
-            "Szeged",
-            "Győr",
-            "Miskolc",
-            "Eger"
-        ],
-        correct: 0
-    },
+{
+question:"Melyik folyó folyik át Budapesten?",
+answers:["Tisza","Duna","Rába","Dráva"],
+correct:1
+},
 
-    {
-        question: "Ki volt Magyarország első királya?",
-        answers: [
-            "Mátyás király",
-            "Szent István",
-            "IV. Béla",
-            "Nagy Lajos"
-        ],
-        correct: 1
-    },
+{
+question:"Ki írta a Himnuszt?",
+answers:["Petőfi Sándor","Arany János","Kölcsey Ferenc","Ady Endre"],
+correct:2
+},
 
-    {
-        question: "Melyik folyó folyik keresztül Budapesten?",
-        answers: [
-            "Tisza",
-            "Dráva",
-            "Duna",
-            "Rába"
-        ],
-        correct: 2
-    },
+{
+question:"Melyik városban található a Dóm tér?",
+answers:["Szeged","Pécs","Eger","Győr"],
+correct:0
+},
 
-    {
-        question: "Melyik a legmagasabb magyarországi hegy?",
-        answers: [
-            "Kékes",
-            "Csóványos",
-            "Nagy-Hideg-hegy",
-            "Pilis"
-        ],
-        correct: 0
-    },
+{
+question:"Melyik a legmagasabb magyarországi hegy?",
+answers:["Kékes","Pilis","Csóványos","Börzsöny"],
+correct:0
+},
 
-    {
-        question: "Melyik szín NEM található meg a magyar zászlóban?",
-        answers: [
-            "Piros",
-            "Fehér",
-            "Zöld",
-            "Kék"
-        ],
-        correct: 3
-    }
+{
+question:"Ki volt Magyarország első királya?",
+answers:["Szent István","Mátyás király","IV. Béla","Nagy Lajos"],
+correct:0
+},
+
+{
+question:"Mikor ünnepeljük március 15-ét?",
+answers:["A honfoglalást","Az 1848-as forradalmat","A koronázást","A mohácsi csatát"],
+correct:1
+},
+
+{
+question:"Melyik város a magyar puszta egyik központja?",
+answers:["Hortobágy","Sopron","Vác","Siófok"],
+correct:0
+},
+
+{
+question:"Melyik állat látható gyakran a magyar pusztán?",
+answers:["Gulya","Pingvin","Koala","Láma"],
+correct:0
+},
+
+{
+question:"Melyik város híres a szegedi halászléről?",
+answers:["Szeged","Kaposvár","Miskolc","Sopron"],
+correct:0
+},
+
+{
+question:"Hány szín található a magyar zászlóban?",
+answers:["2","3","4","5"],
+correct:1
+},
+
+{
+question:"Melyik városban található a Parlament?",
+answers:["Budapest","Debrecen","Pécs","Szeged"],
+correct:0
+},
+
+{
+question:"Melyik madár Magyarország egyik ismert ragadozó madara?",
+answers:["Túzok","Fehér gólya","Parlagi sas","Pingvin"],
+correct:2
+},
+
+{
+question:"Melyik tengerpart nélküli ország Magyarország?",
+answers:["Igen","Nem","Csak nyáron","Csak télen"],
+correct:0
+},
+
+{
+question:"Melyik hónap követi a júniust?",
+answers:["Május","Július","Augusztus","Április"],
+correct:1
+},
+
+{
+question:"Melyik város híres a székesegyházáról és a váráról?",
+answers:["Eger","Szeged","Siófok","Békéscsaba"],
+correct:0
+},
+
+{
+question:"Melyik növény híres magyar fűszer?",
+answers:["Paprika","Banán","Kókusz","Ananász"],
+correct:0
+}
 
 ];
 
 
-let currentQuestion = 0;
-let score = 0;
-let playerName = "";
-let timeLeft = 15;
-let timerInterval = null;
-let answering = false;
-
-
-function startGame() {
-
-    const input = document.getElementById("playerName");
-
-    playerName = input.value.trim();
-
-    if (!playerName) {
-        alert("Kérlek, írd be a neved!");
-        input.focus();
-        return;
-    }
-
-    currentQuestion = 0;
-    score = 0;
-
-    document.getElementById("startScreen")
-        .classList.add("hidden");
-
-    document.getElementById("resultScreen")
-        .classList.add("hidden");
-
-    document.getElementById("leaderboardScreen")
-        .classList.add("hidden");
-
-    document.getElementById("quizScreen")
-        .classList.remove("hidden");
-
-    document.getElementById("scoreDisplay")
-        .textContent = score;
-
-    showQuestion();
-}
-
-
-function showQuestion() {
-
-    clearInterval(timerInterval);
-
-    answering = false;
-
-    const question = questions[currentQuestion];
-
-    document.getElementById("questionNumber")
-        .textContent =
-        `${currentQuestion + 1} / ${questions.length}`;
-
-    document.getElementById("question")
-        .textContent = question.question;
-
-    document.getElementById("feedback")
-        .textContent = "";
-
-    document.getElementById("progress")
-        .style.width =
-        `${((currentQuestion + 1) / questions.length) * 100}%`;
-
-    const answersContainer =
-        document.getElementById("answers");
-
-    answersContainer.innerHTML = "";
-
-    question.answers.forEach((answer, index) => {
-
-        const button = document.createElement("button");
-
-        button.textContent = answer;
-        button.className = "answer";
-
-        button.onclick = () => {
-            checkAnswer(index, button);
-        };
-
-        answersContainer.appendChild(button);
-
-    });
-
-    startTimer();
-}
-
-
-function startTimer() {
-
-    timeLeft = 15;
-
-    document.getElementById("timer")
-        .textContent = timeLeft;
-
-    timerInterval = setInterval(() => {
-
-        timeLeft--;
-
-        document.getElementById("timer")
-            .textContent = timeLeft;
-
-        if (timeLeft <= 0) {
-
-            clearInterval(timerInterval);
-
-            timeOut();
-
-        }
-
-    }, 1000);
-}
-
-
-function timeOut() {
-
-    if (answering) return;
-
-    answering = true;
-
-    document.getElementById("feedback")
-        .textContent = "⏰ Lejárt az idő!";
-
-    document.getElementById("feedback")
-        .style.color = "#b71c1c";
-
-    setTimeout(nextQuestion, 900);
-}
-
-
-function checkAnswer(selectedAnswer, clickedButton) {
-
-    if (answering) return;
-
-    answering = true;
-
-    clearInterval(timerInterval);
-
-    const question = questions[currentQuestion];
-
-    const allButtons =
-        document.querySelectorAll(".answer");
-
-    allButtons.forEach(button => {
-        button.disabled = true;
-    });
-
-    if (selectedAnswer === question.correct) {
-
-        clickedButton.classList.add("correct");
-
-        /*
-         * Alappont: 100
-         * Időbónusz: maximum 50
-         */
-        const points = 100 + (timeLeft * 3);
-
-        score += points;
-
-        document.getElementById("scoreDisplay")
-            .textContent = score;
-
-        document.getElementById("feedback")
-            .textContent =
-            `✅ Helyes! +${points} pont`;
-
-        document.getElementById("feedback")
-            .style.color = "#16803c";
-
-    } else {
-
-        clickedButton.classList.add("wrong");
-
-        allButtons[question.correct]
-            .classList.add("correct");
-
-        document.getElementById("feedback")
-            .textContent =
-            "❌ Sajnos nem ez volt a helyes válasz.";
-
-        document.getElementById("feedback")
-            .style.color = "#b71c1c";
-    }
-
-    setTimeout(nextQuestion, 900);
-}
-
-
-function nextQuestion() {
-
-    currentQuestion++;
-
-    if (currentQuestion >= questions.length) {
-
-        finishGame();
-
-    } else {
-
-        showQuestion();
-
-    }
-}
-
-
-function finishGame() {
-
-    clearInterval(timerInterval);
-
-    saveScore();
-
-    document.getElementById("quizScreen")
-        .classList.add("hidden");
-
-    document.getElementById("resultScreen")
-        .classList.remove("hidden");
-
-    document.getElementById("resultText")
-        .textContent =
-        `${playerName}, gratulálok! A végső eredményed:`;
-
-    document.getElementById("finalScore")
-        .textContent = score;
-}
-
-
-function saveScore() {
-
-    let leaderboard =
-        JSON.parse(localStorage.getItem("leaderboard")) || [];
-
-    leaderboard.push({
-        name: playerName,
-        score: score,
-        date: new Date().toISOString()
-    });
-
-    leaderboard.sort((a, b) => b.score - a.score);
-
-    leaderboard =
-        leaderboard.slice(0, 100);
-
-    localStorage.setItem(
-        "leaderboard",
-        JSON.stringify(leaderboard)
-    );
-}
-
-
-function showLeaderboard() {
-
-    clearInterval(timerInterval);
-
-    document.getElementById("startScreen")
-        .classList.add("hidden");
-
-    document.getElementById("quizScreen")
-        .classList.add("hidden");
-
-    document.getElementById("resultScreen")
-        .classList.add("hidden");
-
-    document.getElementById("leaderboardScreen")
-        .classList.remove("hidden");
-
-    const list =
-        document.getElementById("leaderboardList");
-
-    list.innerHTML = "";
-
-    let leaderboard =
-        JSON.parse(localStorage.getItem("leaderboard")) || [];
-
-    if (leaderboard.length === 0) {
-
-        list.innerHTML =
-            `<div class="empty">
-                Még nincs eredmény.
-             </div>`;
-
-        return;
-    }
-
-    leaderboard.forEach((player, index) => {
-
-        const row =
-            document.createElement("div");
-
-        row.className = "leaderboard-row";
-
-        let medal = "";
-
-        if (index === 0) medal = "🥇";
-        else if (index === 1) medal = "🥈";
-        else if (index === 2) medal = "🥉";
-        else medal = `${index + 1}.`;
-
-        row.innerHTML = `
-            <div class="rank">${medal}</div>
-
-            <div class="player">
-                ${escapeHtml(player.name)}
-            </div>
-
-            <div class="points">
-                ${player.score} pont
-            </div>
-        `;
-
-        list.appendChild(row);
-
-    });
-}
-
-
-function escapeHtml(text) {
-
-    const div =
-        document.createElement("div");
-
-    div.textContent = text;
-
-    return div.innerHTML;
-}
-
-</script>
-
-</body>
-</html>
+/* =========================
+   NEHÉZ - 20 KÉRDÉS
+========================= */
+
+const hardQuestions = [
+
+{
+question:"Melyik évben zajlott a mohácsi csata?",
+answers:["1456","1526","1541","1606"],
+correct:1
+},
+
+{
+question:"Ki volt a Hunyadiak legismertebb királya?",
+answers:["Hunyadi János","Mátyás király","II. Lajos","II. András"],
+correct:1
+},
+
+{
+question:"Melyik évben foglalták el a törökök Budát?",
+answers:["1526","1541","1566","1686"],
+correct:1
+},
+
+{
+question:"Ki írta Az ember tragédiáját?",
+answers:["Madách Imre","Jókai Mór","Mikszáth Kálmán","Vörösmarty Mihály"],
+correct:0
+},
+
+{
+question:"Ki írta a Szózatot?",
+answers:["Kölcsey Ferenc","Vörösmarty Mihály","Petőfi Sándor","Arany János"],
+correct:1
+},
+
+{
+question:"Melyik évben zajlott az 1956-os forradalom?",
+answers:["1945","1956","1968","1989"],
+correct:1
+},
+
+{
+question:"Ki volt a szabadságharc vezérlő fejedelme 1703–1711 között?",
+answers:["II. Rákóczi Ferenc","Kossuth Lajos","Batthyány Lajos","Széchenyi István"],
+correct:0
+},
+
+{
+question:"Melyik folyó a Tisza legnagyobb magyarországi mellékfolyója?",
+answers:["Szamos","Rába","Ipoly","Zala"],
+correct:0
+},
+
+{
+question:"Melyik magyar városban található a Széchenyi tér és a Bazilika?",
+answers:["Esztergom","Eger","Pécs","Veszprém"],
+correct:0
+},
+
+{
+question:"Melyik történelmi esemény történt 1456-ban?",
+answers:["Mohácsi csata","Nándorfehérvári diadal","Honfoglalás","Rákóczi-szabadságharc"],
+correct:1
+},
+
+{
+question:"Ki alapította a Magyar Tudományos Akadémia elődjének létrehozását támogató felajánlást?",
+answers:["Széchenyi István","Kossuth Lajos","Deák Ferenc","Wesselényi Miklós"],
+correct:0
+},
+
+{
+question:"Melyik magyar királyt nevezték Könyves Kálmánnak?",
+answers:["I. Kálmán","II. Béla","III. Béla","I. Géza"],
+correct:0
+},
+
+{
+question:"Melyik évben történt a trianoni békeszerződés?",
+answers:["1918","1919","1920","1921"],
+correct:2
+},
+
+{
+question:"Melyik költő írta a Toldit?",
+answers:["Petőfi Sándor","Arany János","Ady Endre","József Attila"],
+correct:1
+},
+
+{
+question:"Melyik város volt a középkori Magyar
 ```
 
