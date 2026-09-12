@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Magyar Kvíz Verseny</title>
+
+    <title>Magyar Kvíz Verseny 🇭🇺</title>
 
     <style>
         * {
@@ -13,42 +14,52 @@
 
         body {
             margin: 0;
+            min-height: 100vh;
             font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #b71c1c, #ffffff, #16803c);
-            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 20px;
         }
 
         .container {
-            width: 90%;
-            max-width: 700px;
+            width: 100%;
+            max-width: 720px;
             background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.25);
-            text-align: center;
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.25);
+        }
+
+        .hidden {
+            display: none !important;
         }
 
         h1 {
+            text-align: center;
             margin-top: 0;
-            color: #222;
+            font-size: 36px;
+        }
+
+        h2 {
+            text-align: center;
         }
 
         .subtitle {
+            text-align: center;
             color: #666;
             font-size: 18px;
-            margin-bottom: 30px;
+            line-height: 1.5;
         }
 
         input {
             width: 100%;
-            padding: 15px;
-            font-size: 18px;
+            padding: 16px;
             border: 2px solid #ddd;
-            border-radius: 10px;
-            margin-bottom: 15px;
+            border-radius: 12px;
+            font-size: 18px;
+            margin: 20px 0 12px;
             outline: none;
         }
 
@@ -58,84 +69,157 @@
 
         button {
             width: 100%;
-            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 10px;
             font-size: 18px;
             font-weight: bold;
-            border: none;
-            border-radius: 10px;
             cursor: pointer;
             background: #16803c;
             color: white;
             transition: 0.2s;
-            margin-bottom: 10px;
         }
 
         button:hover {
-            transform: scale(1.02);
-            background: #10652f;
+            transform: translateY(-2px);
+            opacity: 0.9;
         }
 
-        .secondary {
-            background: #333;
-        }
-
-        .secondary:hover {
+        .dark-button {
             background: #222;
         }
 
-        #quiz,
-        #result,
-        #leaderboard {
-            display: none;
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            padding: 10px 15px;
+            background: #f1f1f1;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .timer {
+            color: #b71c1c;
+        }
+
+        .progress-background {
+            width: 100%;
+            height: 10px;
+            background: #eee;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .progress {
+            height: 100%;
+            width: 0%;
+            background: #16803c;
+            transition: width 0.3s;
         }
 
         .question {
-            font-size: 24px;
+            font-size: 27px;
             font-weight: bold;
-            margin: 25px 0;
+            text-align: center;
+            line-height: 1.4;
+            margin: 30px 0;
         }
 
         .answer {
-            background: #f1f1f1;
+            background: #f4f4f4;
             color: #222;
+            border: 2px solid transparent;
+            text-align: left;
         }
 
         .answer:hover {
-            background: #ddd;
+            background: #e5e5e5;
         }
 
-        .score {
-            font-size: 36px;
+        .answer.correct {
+            background: #d9f5df;
+            border-color: #16803c;
+        }
+
+        .answer.wrong {
+            background: #ffe0e0;
+            border-color: #b71c1c;
+        }
+
+        .feedback {
+            text-align: center;
+            font-size: 20px;
             font-weight: bold;
-            margin: 25px 0;
+            min-height: 30px;
+            margin: 15px 0;
+        }
+
+        .score-big {
+            text-align: center;
+            font-size: 52px;
+            font-weight: bold;
             color: #16803c;
+            margin: 20px 0;
         }
 
         .leaderboard-row {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 10px;
             padding: 14px;
             margin: 8px 0;
             background: #f5f5f5;
-            border-radius: 10px;
-            font-size: 18px;
+            border-radius: 12px;
         }
 
         .rank {
+            width: 45px;
             font-weight: bold;
-            min-width: 50px;
+            font-size: 20px;
         }
 
         .player {
             flex: 1;
-            text-align: left;
             font-weight: bold;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .points {
             font-weight: bold;
             color: #16803c;
+        }
+
+        .empty {
+            text-align: center;
+            color: #777;
+            padding: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 22px;
+            }
+
+            h1 {
+                font-size: 29px;
+            }
+
+            .question {
+                font-size: 22px;
+            }
+
+            .topbar {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -145,80 +229,109 @@
 <div class="container">
 
     <!-- KEZDŐOLDAL -->
-    <div id="start">
+    <section id="startScreen">
 
         <h1>🇭🇺 Magyar Kvíz Verseny</h1>
 
         <p class="subtitle">
-            Teszteld a tudásod és kerülj fel a ranglistára!
+            Teszteld a magyar tudásod!<br>
+            Válaszolj helyesen és kerülj fel a ranglistára. 🏆
         </p>
 
         <input
-            type="text"
             id="playerName"
-            placeholder="Írd be a neved"
+            type="text"
             maxlength="30"
+            placeholder="Írd be a neved"
         >
 
         <button onclick="startGame()">
-            Játék indítása
+            🚀 Játék indítása
         </button>
 
-        <button class="secondary" onclick="showLeaderboard()">
+        <button class="dark-button" onclick="showLeaderboard()">
             🏆 Ranglista
         </button>
 
-    </div>
+    </section>
 
 
     <!-- KVÍZ -->
-    <div id="quiz">
+    <section id="quizScreen" class="hidden">
 
-        <h2 id="questionNumber"></h2>
+        <div class="topbar">
 
-        <div class="question" id="question"></div>
+            <div class="badge">
+                📝 <span id="questionNumber">1 / 10</span>
+            </div>
+
+            <div class="badge">
+                ⭐ <span id="scoreDisplay">0</span> pont
+            </div>
+
+            <div class="badge timer">
+                ⏱️ <span id="timer">15</span>s
+            </div>
+
+        </div>
+
+        <div class="progress-background">
+            <div class="progress" id="progress"></div>
+        </div>
+
+        <div class="question" id="question">
+            Kérdés
+        </div>
 
         <div id="answers"></div>
 
-    </div>
+        <div class="feedback" id="feedback"></div>
+
+    </section>
 
 
     <!-- EREDMÉNY -->
-    <div id="result">
+    <section id="resultScreen" class="hidden">
 
-        <h1>🎉 Gratulálunk!</h1>
+        <h1>🎉 Játék vége!</h1>
 
-        <p id="resultText"></p>
+        <p class="subtitle" id="resultText"></p>
 
-        <div class="score" id="score"></div>
+        <div class="score-big">
+            <span id="finalScore">0</span>
+        </div>
+
+        <p class="subtitle">
+            pont
+        </p>
 
         <button onclick="showLeaderboard()">
-            🏆 Ranglista megtekintése
+            🏆 Ranglista
         </button>
 
-        <button class="secondary" onclick="location.reload()">
-            Új játék
+        <button class="dark-button" onclick="location.reload()">
+            🔄 Új játék
         </button>
 
-    </div>
+    </section>
 
 
-    <!-- LEADERBOARD -->
-    <div id="leaderboard">
+    <!-- RANGLISTA -->
+    <section id="leaderboardScreen" class="hidden">
 
         <h1>🏆 Ranglista</h1>
 
         <p class="subtitle">
-            A legjobb eredmények
+            Legjobb eredmények
         </p>
 
         <div id="leaderboardList"></div>
 
         <button onclick="location.reload()">
-            Vissza
+            ← Vissza
         </button>
 
-    </div>
+    </section>
 
 </div>
 
@@ -280,6 +393,61 @@ const questions = [
             "Pengő"
         ],
         correct: 2
+    },
+
+    {
+        question: "Melyik városban található a Dóm tér?",
+        answers: [
+            "Szeged",
+            "Győr",
+            "Miskolc",
+            "Eger"
+        ],
+        correct: 0
+    },
+
+    {
+        question: "Ki volt Magyarország első királya?",
+        answers: [
+            "Mátyás király",
+            "Szent István",
+            "IV. Béla",
+            "Nagy Lajos"
+        ],
+        correct: 1
+    },
+
+    {
+        question: "Melyik folyó folyik keresztül Budapesten?",
+        answers: [
+            "Tisza",
+            "Dráva",
+            "Duna",
+            "Rába"
+        ],
+        correct: 2
+    },
+
+    {
+        question: "Melyik a legmagasabb magyarországi hegy?",
+        answers: [
+            "Kékes",
+            "Csóványos",
+            "Nagy-Hideg-hegy",
+            "Pilis"
+        ],
+        correct: 0
+    },
+
+    {
+        question: "Melyik szín NEM található meg a magyar zászlóban?",
+        answers: [
+            "Piros",
+            "Fehér",
+            "Zöld",
+            "Kék"
+        ],
+        correct: 3
     }
 
 ];
@@ -288,6 +456,9 @@ const questions = [
 let currentQuestion = 0;
 let score = 0;
 let playerName = "";
+let timeLeft = 15;
+let timerInterval = null;
+let answering = false;
 
 
 function startGame() {
@@ -296,13 +467,29 @@ function startGame() {
 
     playerName = input.value.trim();
 
-    if (playerName === "") {
+    if (!playerName) {
         alert("Kérlek, írd be a neved!");
+        input.focus();
         return;
     }
 
-    document.getElementById("start").style.display = "none";
-    document.getElementById("quiz").style.display = "block";
+    currentQuestion = 0;
+    score = 0;
+
+    document.getElementById("startScreen")
+        .classList.add("hidden");
+
+    document.getElementById("resultScreen")
+        .classList.add("hidden");
+
+    document.getElementById("leaderboardScreen")
+        .classList.add("hidden");
+
+    document.getElementById("quizScreen")
+        .classList.remove("hidden");
+
+    document.getElementById("scoreDisplay")
+        .textContent = score;
 
     showQuestion();
 }
@@ -310,13 +497,25 @@ function startGame() {
 
 function showQuestion() {
 
+    clearInterval(timerInterval);
+
+    answering = false;
+
     const question = questions[currentQuestion];
 
-    document.getElementById("questionNumber").textContent =
-        `Kérdés ${currentQuestion + 1} / ${questions.length}`;
+    document.getElementById("questionNumber")
+        .textContent =
+        `${currentQuestion + 1} / ${questions.length}`;
 
-    document.getElementById("question").textContent =
-        question.question;
+    document.getElementById("question")
+        .textContent = question.question;
+
+    document.getElementById("feedback")
+        .textContent = "";
+
+    document.getElementById("progress")
+        .style.width =
+        `${((currentQuestion + 1) / questions.length) * 100}%`;
 
     const answersContainer =
         document.getElementById("answers");
@@ -330,36 +529,152 @@ function showQuestion() {
         button.textContent = answer;
         button.className = "answer";
 
-        button.onclick = function() {
-            checkAnswer(index);
+        button.onclick = () => {
+            checkAnswer(index, button);
         };
 
         answersContainer.appendChild(button);
 
     });
+
+    startTimer();
 }
 
 
-function checkAnswer(selectedAnswer) {
+function startTimer() {
+
+    timeLeft = 15;
+
+    document.getElementById("timer")
+        .textContent = timeLeft;
+
+    timerInterval = setInterval(() => {
+
+        timeLeft--;
+
+        document.getElementById("timer")
+            .textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+
+            clearInterval(timerInterval);
+
+            timeOut();
+
+        }
+
+    }, 1000);
+}
+
+
+function timeOut() {
+
+    if (answering) return;
+
+    answering = true;
+
+    document.getElementById("feedback")
+        .textContent = "⏰ Lejárt az idő!";
+
+    document.getElementById("feedback")
+        .style.color = "#b71c1c";
+
+    setTimeout(nextQuestion, 900);
+}
+
+
+function checkAnswer(selectedAnswer, clickedButton) {
+
+    if (answering) return;
+
+    answering = true;
+
+    clearInterval(timerInterval);
 
     const question = questions[currentQuestion];
 
+    const allButtons =
+        document.querySelectorAll(".answer");
+
+    allButtons.forEach(button => {
+        button.disabled = true;
+    });
+
     if (selectedAnswer === question.correct) {
-        score += 100;
-    }
 
-    currentQuestion++;
+        clickedButton.classList.add("correct");
 
-    if (currentQuestion < questions.length) {
+        /*
+         * Alappont: 100
+         * Időbónusz: maximum 50
+         */
+        const points = 100 + (timeLeft * 3);
 
-        showQuestion();
+        score += points;
+
+        document.getElementById("scoreDisplay")
+            .textContent = score;
+
+        document.getElementById("feedback")
+            .textContent =
+            `✅ Helyes! +${points} pont`;
+
+        document.getElementById("feedback")
+            .style.color = "#16803c";
 
     } else {
 
-        saveScore();
-        showResult();
+        clickedButton.classList.add("wrong");
+
+        allButtons[question.correct]
+            .classList.add("correct");
+
+        document.getElementById("feedback")
+            .textContent =
+            "❌ Sajnos nem ez volt a helyes válasz.";
+
+        document.getElementById("feedback")
+            .style.color = "#b71c1c";
+    }
+
+    setTimeout(nextQuestion, 900);
+}
+
+
+function nextQuestion() {
+
+    currentQuestion++;
+
+    if (currentQuestion >= questions.length) {
+
+        finishGame();
+
+    } else {
+
+        showQuestion();
 
     }
+}
+
+
+function finishGame() {
+
+    clearInterval(timerInterval);
+
+    saveScore();
+
+    document.getElementById("quizScreen")
+        .classList.add("hidden");
+
+    document.getElementById("resultScreen")
+        .classList.remove("hidden");
+
+    document.getElementById("resultText")
+        .textContent =
+        `${playerName}, gratulálok! A végső eredményed:`;
+
+    document.getElementById("finalScore")
+        .textContent = score;
 }
 
 
@@ -370,12 +685,14 @@ function saveScore() {
 
     leaderboard.push({
         name: playerName,
-        score: score
+        score: score,
+        date: new Date().toISOString()
     });
 
     leaderboard.sort((a, b) => b.score - a.score);
 
-    leaderboard = leaderboard.slice(0, 100);
+    leaderboard =
+        leaderboard.slice(0, 100);
 
     localStorage.setItem(
         "leaderboard",
@@ -384,24 +701,21 @@ function saveScore() {
 }
 
 
-function showResult() {
-
-    document.getElementById("quiz").style.display = "none";
-    document.getElementById("result").style.display = "block";
-
-    document.getElementById("resultText").textContent =
-        `${playerName}, a játékod véget ért!`;
-
-    document.getElementById("score").textContent =
-        `${score} pont`;
-}
-
-
 function showLeaderboard() {
 
-    document.getElementById("start").style.display = "none";
-    document.getElementById("result").style.display = "none";
-    document.getElementById("leaderboard").style.display = "block";
+    clearInterval(timerInterval);
+
+    document.getElementById("startScreen")
+        .classList.add("hidden");
+
+    document.getElementById("quizScreen")
+        .classList.add("hidden");
+
+    document.getElementById("resultScreen")
+        .classList.add("hidden");
+
+    document.getElementById("leaderboardScreen")
+        .classList.remove("hidden");
 
     const list =
         document.getElementById("leaderboardList");
@@ -414,36 +728,37 @@ function showLeaderboard() {
     if (leaderboard.length === 0) {
 
         list.innerHTML =
-            "<p>Még nincs eredmény.</p>";
+            `<div class="empty">
+                Még nincs eredmény.
+             </div>`;
 
         return;
     }
 
-
     leaderboard.forEach((player, index) => {
 
-        const row = document.createElement("div");
+        const row =
+            document.createElement("div");
 
         row.className = "leaderboard-row";
 
         let medal = "";
 
         if (index === 0) medal = "🥇";
-        if (index === 1) medal = "🥈";
-        if (index === 2) medal = "🥉";
+        else if (index === 1) medal = "🥈";
+        else if (index === 2) medal = "🥉";
+        else medal = `${index + 1}.`;
 
         row.innerHTML = `
-            <span class="rank">
-                ${medal || (index + 1) + "."}
-            </span>
+            <div class="rank">${medal}</div>
 
-            <span class="player">
+            <div class="player">
                 ${escapeHtml(player.name)}
-            </span>
+            </div>
 
-            <span class="points">
+            <div class="points">
                 ${player.score} pont
-            </span>
+            </div>
         `;
 
         list.appendChild(row);
@@ -454,7 +769,8 @@ function showLeaderboard() {
 
 function escapeHtml(text) {
 
-    const div = document.createElement("div");
+    const div =
+        document.createElement("div");
 
     div.textContent = text;
 
